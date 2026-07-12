@@ -50,7 +50,6 @@
     perspective:3000px;
   }
 
-  /* ---------- COVER ---------- */
   #cover{
     position:absolute; inset:0;
     background:
@@ -67,7 +66,6 @@
     display:flex; align-items:center; justify-content:center;
   }
   #cover::before{
-    /* leather grain */
     content:"";
     position:absolute; inset:0;
     background-image:url("data:image/svg+xml;utf8,\
@@ -80,7 +78,6 @@
     border-radius:2px 8px 8px 2px;
   }
   #cover::after{
-    /* subtle inset frame, like a bound border */
     content:"";
     position:absolute; inset:26px;
     border:1px solid rgba(138,122,83,0.28);
@@ -109,7 +106,6 @@
     opacity:0.65;
   }
 
-  /* ---------- OPEN SPREAD: two pages, a spine between them ---------- */
   #spread{
     position:absolute; inset:0;
     display:flex;
@@ -155,13 +151,13 @@
     align-items:center;
     justify-content:center;
     text-align:center;
+    position:relative;
   }
   #right-page{
     border-radius:0 2px 2px 0;
     box-shadow:inset 18px 0 30px -20px rgba(0,0,0,0.35);
   }
 
-  /* the spine/gutter shadow between pages */
   #spread::before{
     content:"";
     position:absolute; top:0; bottom:0; left:50%;
@@ -173,18 +169,8 @@
     z-index:4; pointer-events:none;
   }
 
-  /* left page contents */
   #bookplate-mark{
-    width:58px; height:58px; margin-bottom:22px; opacity:0.55;
-  }
-  #bookplate-title{
-    font-family:'Cormorant Garamond', serif;
-    font-variant:small-caps;
-    font-weight:600;
-    font-size:26px;
-    letter-spacing:0.12em;
-    color:#4a3b26;
-    margin-bottom:18px;
+    width:74px; height:74px; margin-bottom:26px; opacity:0.5;
   }
   #bookplate-line{
     width:70px; height:1px; background:var(--parchment-shadow);
@@ -193,18 +179,47 @@
   #bookplate-epigraph{
     font-family:'Cormorant Garamond', serif;
     font-variant:small-caps;
-    font-size:16px; line-height:1.6;
+    font-size:13px; line-height:1.6;
     color:#4a3b26;
     max-width:80%;
     opacity:0.85;
   }
+  #bookplate-exlibris{
+    position:absolute;
+    bottom:56px; left:0; right:0;
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:13px;
+    letter-spacing:0.1em;
+    color:var(--parchment-shadow);
+    opacity:0.65;
+    text-align:center;
+  }
+  #bookplate-exlibris .name{
+    display:block;
+    font-variant:small-caps;
+    font-style:normal;
+    font-weight:600;
+    font-size:15px;
+    letter-spacing:0.12em;
+    color:#4a3b26;
+    margin-top:5px;
+  }
+  #bookplate-exlibris .institution{
+    display:block;
+    font-style:italic;
+    font-weight:400;
+    font-size:11px;
+    letter-spacing:0.08em;
+    color:var(--parchment-shadow);
+    opacity:0.85;
+    margin-top:4px;
+  }
 
-  /* right page contents */
   #page-header{
     font-family:'Cormorant Garamond', serif;
     font-variant:small-caps;
     font-size:16px;
-    font-variant:small-caps;
     font-weight:500;
     color:var(--parchment-shadow);
     letter-spacing:0.28em;
@@ -287,7 +302,7 @@
   #quill-input{
     width:100%; background:transparent; border:none; outline:none; resize:none;
     font-family:'Cormorant Garamond', serif;
-    font-variant:small-caps; font-size:16px;
+    font-variant:small-caps; font-size:19px;
     color:var(--ink-user); line-height:1.4; caret-color:var(--brass);
   }
   #quill-input::placeholder{
@@ -320,9 +335,9 @@
           <circle cx="50" cy="50" r="42" fill="none" stroke="#4a3b26" stroke-width="1.5"/>
           <path d="M32 62 L64 30 M64 30 L58 30 M64 30 L64 36" fill="none" stroke="#4a3b26" stroke-width="2" stroke-linecap="round"/>
         </svg>
-        <div id="bookplate-title">Ex Diario</div>
         <div id="bookplate-line"></div>
         <div id="bookplate-epigraph">Write your truth<br>let the diary<br>whisper the rest</div>
+        <div id="bookplate-exlibris">Ex Libris<span class="name">Iqra Fatima Umang</span><span class="institution">Aligarh Muslim University</span></div>
       </div>
 
       <div class="page" id="right-page">
@@ -346,7 +361,7 @@
           <path d="M32 62 L64 30 M64 30 L58 30 M64 30 L64 36" fill="none" stroke-width="2" stroke-linecap="round"/>
         </svg>
       </div>
-      <div id="cover-hint">open</div>
+      <div id="cover-hint">Ex Diario</div>
     </div>
 
   </div>
@@ -408,7 +423,7 @@ function typeInto(div, text, speedMs, onDone){
   step();
 }
 
-let currentEntries = []; // the visible-on-page entries, cleared once they vanish
+let currentEntries = [];
 let vanishTimer = null;
 
 function scheduleVanish(){
@@ -418,8 +433,8 @@ function scheduleVanish(){
     setTimeout(()=>{
       currentEntries.forEach(div => div.remove());
       currentEntries = [];
-    }, 1500); // matches the CSS transition duration
-  }, 5500); // how long the reply stays legible before dissolving
+    }, 1500);
+  }, 5500);
 }
 
 function clearPageImmediately(){
@@ -433,7 +448,7 @@ function showConnectionError(){
   setTimeout(()=> spread.classList.remove('connection-error'), 400);
   const errDiv = appendEntry(true, true);
   currentEntries.push(errDiv);
-  typeInto(errDiv, "...the ink will not flow. Something stands between us — check that the diary's other half is still listening.", 22, scheduleVanish);
+  typeInto(errDiv, "...the ink will not flow. Something stands between us, check that the diary's other half is still listening.", 22, scheduleVanish);
 }
 
 input.addEventListener('keydown', (e) => {
@@ -444,7 +459,6 @@ input.addEventListener('keydown', (e) => {
     input.value = '';
     input.disabled = true;
 
-    // a fresh question clears whatever's still lingering on the page
     clearPageImmediately();
 
     const userDiv = appendEntry(false, false);
@@ -485,5 +499,3 @@ input.addEventListener('keydown', (e) => {
 </script>
 </body>
 </html>
-
-
